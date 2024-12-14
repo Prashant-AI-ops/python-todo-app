@@ -1,6 +1,7 @@
 import Functions
 import FreeSimpleGUI as sg
 
+sg.theme("Material1")
 label = sg.Text("Enter To-Do:")
 input_box = sg.InputText(tooltip="Enter To-Do", key="todo")
 add_button = sg.Button("Add")
@@ -15,7 +16,6 @@ window = sg.Window("My To-Do App",
 
 while True:
     event, value = window.read()
-    print(event, value)
     match event:
         case "Add":
             todos_list = Functions.read_todos()
@@ -26,23 +26,29 @@ while True:
             window["todo"].update(value="")
 
         case "Edit":
-            selected_todo = value["todo_list"][0]
-            todo_to_edit = value["todo"]+"\n"
-            #print(todo_to_edit)
-            edit_todo_list = Functions.read_todos()
-            index = edit_todo_list.index(selected_todo)
-            edit_todo_list[index] = todo_to_edit
-            Functions.write_todos(edit_todo_list)
-            window["todo_list"].update(values=edit_todo_list)
-            window["todo"].update(value="")
+            try:
+                selected_todo = value["todo_list"][0]
+                todo_to_edit = value["todo"]+"\n"
+                #print(todo_to_edit)
+                edit_todo_list = Functions.read_todos()
+                index = edit_todo_list.index(selected_todo)
+                edit_todo_list[index] = todo_to_edit
+                Functions.write_todos(edit_todo_list)
+                window["todo_list"].update(values=edit_todo_list)
+                window["todo"].update(value="")
+            except IndexError:
+                sg.popup("Please select a To-Do item first", font=("Helvetica", 15))
 
         case "Complete":
-            todo_complete = value["todo_list"][0]
-            todos = Functions.read_todos()
-            todos.remove(todo_complete)
-            Functions.write_todos(todos)
-            window["todo_list"].update(values=todos)
-            window["todo"].update(value="")
+            try:
+                todo_complete = value["todo_list"][0]
+                todos = Functions.read_todos()
+                todos.remove(todo_complete)
+                Functions.write_todos(todos)
+                window["todo_list"].update(values=todos)
+                window["todo"].update(value="")
+            except IndexError:
+                sg.popup("Please select a To-Do item first", font=("Helvetica",15))
 
         case "Exit":
             break
